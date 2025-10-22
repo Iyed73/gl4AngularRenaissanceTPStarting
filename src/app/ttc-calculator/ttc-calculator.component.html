@@ -1,0 +1,24 @@
+<div>
+  <h2>TTC Calculator</h2>
+<div class="results">
+  <label>Prix HT:</label>
+  <input type="number" [formControl]="prixHT" />
+
+  <label>Quantité:</label>
+  <input type="number" [formControl]="quantite" />
+
+  <label>TVA %:</label>
+  <input type="number" [formControl]="tva" />
+</div>
+  <div class="results" *ngIf="result$ | async as result">
+    <div class="result-box prix-unitaire">
+      Prix unitaire TTC: ${{ result.prixTTC | number:'1.2-2' }}
+    </div>
+    <div class="result-box total-ttc">
+      Prix total TTC: ${{ result.total | number:'1.2-2' }}
+    </div>
+    <div class="result-box discount">
+      Discount: ${{ result.discount | number:'1.2-2' }}
+    </div>
+  </div>
+</div>

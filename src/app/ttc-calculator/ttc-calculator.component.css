@@ -1,0 +1,47 @@
+div {
+  max-width: 700px;
+  margin: 2rem auto;
+  font-family: Arial, sans-serif;
+}
+
+div > label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: bold;
+  width: 90%;
+}
+
+input[type="number"] {
+  width: 80%;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.results {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.result-box {
+  flex: 1;
+  padding: 1rem;
+  border-radius: 8px;
+  color: #000;
+  font-weight: bold;
+}
+
+.prix-unitaire {
+  background-color: #c9f0f5; 
+}
+
+.total-ttc {
+  background-color: #d8f5d0; 
+}
+
+.discount {
+  background-color: #f5d0d0;
+}
