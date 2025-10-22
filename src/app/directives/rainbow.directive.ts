@@ -1,4 +1,5 @@
-import { Directive, HostBinding, HostListener } from '@angular/core';
+import { Directive, ElementRef, HostBinding } from '@angular/core';
+import { fromEvent } from 'rxjs';
 
 @Directive({
   selector: 'input[appRainbow]',
@@ -6,17 +7,14 @@ import { Directive, HostBinding, HostListener } from '@angular/core';
 })
 export class RainbowDirective {
   private colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
+
   @HostBinding('style.color') color!: string;
   @HostBinding('style.borderColor') borderColor!: string;
   @HostBinding('style.borderStyle') borderStyle = 'solid';
   @HostBinding('style.borderWidth') borderWidth = '1px';
 
-  constructor() {
-    this.setRandomColor();
-  }
-
-  @HostListener('keyup')
-  onKeyUp() {
+  constructor(private el: ElementRef<HTMLInputElement>) {
+    fromEvent(el.nativeElement, 'keyup').subscribe(() => this.setRandomColor());
     this.setRandomColor();
   }
 
