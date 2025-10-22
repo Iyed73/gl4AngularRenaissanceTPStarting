@@ -2,4 +2,26 @@
 <hr>
 <router-outlet></router-outlet>
 <hr>
+<div style="display: flex; flex-direction: column; align-items: center; margin-top: 50px; font-family: Arial, sans-serif;">
+  <h1 style="color: #ff6b6b; background: linear-gradient(90deg, #ff6b6b, #feca57, #1dd1a1, #5f27cd); 
+             -webkit-background-clip: text; 
+             -webkit-text-fill-color: transparent; 
+             font-size: 3rem; 
+             margin-bottom: 30px; 
+             text-align: center;">
+    Arc en Ciel
+  </h1>
+
+  <input 
+    type="text" 
+    appRainbow 
+    placeholder="Tapez ici…" 
+    style="width: 400px; height: 50px; font-size: 20px; padding: 10px 15px; border-radius: 10px; 
+           border: 2px solid #ccc; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: all 0.3s; 
+           outline: none;"
+    onfocus="this.style.border='2px solid #1dd1a1'; this.style.boxShadow='0 6px 12px rgba(29,209,161,0.3)';" 
+    onblur="this.style.border='2px solid #ccc'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.1)';"
+  >
+</div>
+
 <h2>Footer</h2>
