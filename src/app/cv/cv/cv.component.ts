@@ -22,7 +22,6 @@ export class CvComponent {
   ) {
     this.cvs$ = this.cvService.getCvs().pipe(
       catchError((e) => {
-        console.error(e);
         this.toastr.error(`
           Attention!! Les données sont fictives, problème avec le serveur.
           Veuillez contacter l'admin.`);
