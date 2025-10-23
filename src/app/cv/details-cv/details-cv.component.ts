@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Cv } from '../model/cv';
 import { CvService } from '../services/cv.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,25 +13,27 @@ import { catchError, map, of, switchMap } from 'rxjs';
   styleUrls: ['./details-cv.component.css'],
 })
 export class DetailsCvComponent {
-  id = this.activatedRoute.snapshot.params['id'];
-  cv$ = this.cvService.getCvById(+this.id).pipe(
-    catchError((error) => {
-      // handle error reactively
-      this.toastr.error(
-        `Erreur: impossible de récupérer le CV. Redirection en cours...`
-      );
-      this.router.navigate([APP_ROUTES.cv]);
-      return of(null);
-    })
+  private cvService = inject(CvService);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  private toastr = inject(ToastrService);
+  public authService = inject(AuthService);
+  cv$ = this.activatedRoute.params.pipe(
+    switchMap((params) =>
+      this.cvService.getCvById(+params['id']).pipe(
+        catchError((error) => {
+          // handle error reactively
+          this.toastr.error(
+            `Erreur: impossible de récupérer le CV. Redirection en cours...`
+          );
+          this.router.navigate([APP_ROUTES.cv]);
+          return of(null);
+        })
+      )
+    )
   );
 
-  constructor(
-    private cvService: CvService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private toastr: ToastrService,
-    public authService: AuthService
-  ) {}
+  constructor() {}
 
   deleteCv(cv: Cv) {
     this.cvService.deleteCvById(cv.id).subscribe({

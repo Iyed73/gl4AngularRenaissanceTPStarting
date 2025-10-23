@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Cv } from '../model/cv';
 import { LoggerService } from '../../services/logger.service';
 import { ToastrService } from 'ngx-toastr';
@@ -10,16 +10,15 @@ import { catchError, Observable, of } from 'rxjs';
   styleUrls: ['./cv.component.css'],
 })
 export class CvComponent {
+  private logger = inject(LoggerService);
+  private toastr = inject(ToastrService);
+  private cvService = inject(CvService);
   cvs$: Observable<Cv[]>;
   selectedCv$: Observable<Cv>;
   /*   selectedCv: Cv | null = null; */
   date = new Date();
 
-  constructor(
-    private logger: LoggerService,
-    private toastr: ToastrService,
-    private cvService: CvService
-  ) {
+  constructor() {
     this.cvs$ = this.cvService.getCvs().pipe(
       catchError((e) => {
         this.toastr.error(`
