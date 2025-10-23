@@ -25,11 +25,6 @@ export class AuthService {
 
   constructor() {
     this.loadStateFromStorage();
-    window.addEventListener('storage', (event) => {
-      if (event.key === CONSTANTES.authStateKey) {
-        this.loadStateFromStorage();
-      }
-    });
   }
 
   private loadStateFromStorage() {
