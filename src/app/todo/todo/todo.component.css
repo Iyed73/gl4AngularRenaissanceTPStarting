@@ -1,0 +1,13 @@
+.todo-list {
+  min-height: 400px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.card {
+  border-radius: 8px;
+}
+
+.card-header {
+  border-radius: 8px 8px 0 0 !important;
+}
