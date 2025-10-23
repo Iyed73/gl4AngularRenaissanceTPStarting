@@ -13,19 +13,16 @@ import { catchError, map, of, switchMap } from 'rxjs';
   styleUrls: ['./details-cv.component.css'],
 })
 export class DetailsCvComponent {
-  cv$ = this.activatedRoute.params.pipe(
-    switchMap((params) =>
-      this.cvService.getCvById(+params['id']).pipe(
-        catchError((error) => {
-          // handle error reactively
-          this.toastr.error(
-            `Erreur: impossible de récupérer le CV. Redirection en cours...`
-          );
-          this.router.navigate([APP_ROUTES.cv]);
-          return of(null);
-        })
-      )
-    )
+  id = this.activatedRoute.snapshot.params['id'];
+  cv$ = this.cvService.getCvById(+this.id).pipe(
+    catchError((error) => {
+      // handle error reactively
+      this.toastr.error(
+        `Erreur: impossible de récupérer le CV. Redirection en cours...`
+      );
+      this.router.navigate([APP_ROUTES.cv]);
+      return of(null);
+    })
   );
 
   constructor(
