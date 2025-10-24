@@ -1,24 +1,21 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Cv } from '../model/cv';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EmbaucheService {
-  private embauchees: Cv[] = [];
+  /**
+   * Signal writable pour la liste des embauchés
+   */
+  #embaucheesSignal = signal<Cv[]>([]);
+  
+  /**
+   * Signal readonly pour la liste des embauchés
+   */
+  embauchees = this.#embaucheesSignal.asReadonly();
 
   constructor() {}
-
-  /**
-   *
-   * Retourne la liste des embauchees
-   *
-   * @returns CV[]
-   *
-   */
-  getEmbauchees(): Cv[] {
-    return this.embauchees;
-  }
 
   /**
    *
@@ -29,8 +26,11 @@ export class EmbaucheService {
    * @returns boolean
    */
   embauche(cv: Cv): boolean {
-    if (this.embauchees.indexOf(cv) == -1) {
-      this.embauchees.push(cv);
+    const currentEmbauchees = this.#embaucheesSignal();
+    const index = currentEmbauchees.findIndex(c => c.id === cv.id);
+    
+    if (index === -1) {
+      this.#embaucheesSignal.update(embauchees => [...embauchees, cv]);
       return true;
     }
     return false;
