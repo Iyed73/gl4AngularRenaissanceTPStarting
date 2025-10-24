@@ -1,13 +1,14 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { CredentialsDto } from '../dto/credentials.dto';
 import { LoginResponseDto } from '../dto/login-response.dto';
 import { HttpClient } from '@angular/common/http';
 import { API } from '../../../config/api.config';
-import { Observable, tap } from 'rxjs';
+import { fromEvent, Observable, tap } from 'rxjs';
 import { AuthState } from '../interfaces/interfaces';
 import { CONSTANTES } from 'src/config/const.config';
 import { Router } from '@angular/router';
 import { APP_ROUTES } from 'src/config/routes.config';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,7 @@ import { APP_ROUTES } from 'src/config/routes.config';
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
   
 
   private authState = signal<AuthState>({ user: null, token: null });
@@ -25,6 +27,15 @@ export class AuthService {
 
   constructor() {
     this.loadStateFromStorage();
+
+    if (isPlatformBrowser(this.platformId)) {
+      fromEvent<StorageEvent>(window, 'storage')
+        .subscribe((event) => {
+          if (event.key === CONSTANTES.authStateKey) {
+            this.loadStateFromStorage();
+          }
+        });
+    }
   }
 
   private loadStateFromStorage() {
