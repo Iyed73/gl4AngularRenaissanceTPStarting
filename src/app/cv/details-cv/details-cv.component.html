@@ -1,12 +1,12 @@
-@if (cv) {
+@if (cv(); as currentCv) {
   <div class="d-flex justify-content-center">
     <div class="col-lg-8 push-lg-4">
       <div class="tab-content p-b-3">
         <div class="tab-pane active" id="profile">
-          <h4 class="m-y-2">Cv {{ cv.firstname }} {{ cv.name }}</h4>
+          <h4 class="m-y-2">Cv {{ currentCv.firstname }} {{ currentCv.name }}</h4>
           <div class="d-flex justify-content-center">
             <img width="150px" height="150px" class="rounded-circle align-content-center"
-              src="assets/images/{{ cv.path | defaultImage }}" alt="{{ cv.name }}" />
+              src="assets/images/{{ currentCv.path | defaultImage }}" alt="{{ currentCv.name }}" />
           </div>
           <div class="row">
             <div class="col-md-12">
@@ -17,25 +17,25 @@
               <table class="table table-hover table-striped">
                 <tbody>
                   <tr>
-                    <td><strong>Name</strong> {{ cv.name }}</td>
+                    <td><strong>Name</strong> {{ currentCv.name }}</td>
                   </tr>
                   <tr>
-                    <td><strong>Firstname</strong> {{ cv.firstname }}</td>
+                    <td><strong>Firstname</strong> {{ currentCv.firstname }}</td>
                   </tr>
                   <tr>
-                    <td><strong>Job</strong> {{ cv.job }}</td>
+                    <td><strong>Job</strong> {{ currentCv.job }}</td>
                   </tr>
                   <tr>
-                    <td><strong>Age</strong> {{ cv.age }}</td>
+                    <td><strong>Age</strong> {{ currentCv.age }}</td>
                   </tr>
                   <tr>
-                    <td><strong>Cin</strong> {{ cv.cin }}</td>
+                    <td><strong>Cin</strong> {{ currentCv.cin }}</td>
                   </tr>
                 </tbody>
               </table>
               <div class="d-flex justify-content-center">
                 @if (authService.isAuthenticated()) {
-                  <button (click)="deleteCv(cv)" class="btn btn-danger">
+                  <button (click)="deleteCv(currentCv)" class="btn btn-danger">
                     Delete
                   </button>
                 }

@@ -1,6 +1,6 @@
-import { Injectable, inject } from "@angular/core";
+import { Injectable, inject, signal } from "@angular/core";
 import { Cv } from "../model/cv";
-import { Observable, Subject } from "rxjs";
+import { Observable } from "rxjs";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { API } from "../../../config/api.config";
 
@@ -10,20 +10,30 @@ import { API } from "../../../config/api.config";
 export class CvService {
   private http = inject(HttpClient);
 
-  private cvs: Cv[] = [];
+  private fakeCvs: Cv[] = [];
+
   /**
-   * Le subject permettant de créer le flux des cvs sélectionnés
+   * Signal pour la liste des CVs
    */
-  #selectCvSuject$ = new Subject<Cv>();
+  #cvsSignal = signal<Cv[]>([]);
   /**
-   * Le flux des cvs sélectionnés
+   * Signal readonly pour la liste des CVs
    */
-  selectCv$ = this.#selectCvSuject$.asObservable();
+  cvs = this.#cvsSignal.asReadonly();
+
+  /**
+   * Signal pour le CV sélectionné
+   */
+  #selectedCvSignal = signal<Cv | null>(null);
+  /**
+   * Signal readonly pour le CV sélectionné
+   */
+  selectedCv = this.#selectedCvSignal.asReadonly();
 
   /** Inserted by Angular inject() migration for backwards compatibility */
   constructor(...args: unknown[]);
   constructor() {
-    this.cvs = [
+    this.fakeCvs = [
       new Cv(1, "aymen", "sellaouti", "teacher", "as.jpg", "1234", 40),
       new Cv(2, "skander", "sellaouti", "enfant", "       ", "1234", 4),
     ];
@@ -37,7 +47,7 @@ export class CvService {
    *
    */
   getFakeCvs(): Cv[] {
-    return this.cvs;
+    return this.fakeCvs;
   }
 
   /**
@@ -49,6 +59,18 @@ export class CvService {
    */
   getCvs(): Observable<Cv[]> {
     return this.http.get<Cv[]>(API.cv);
+  }
+
+  loadCvs(onError?: () => void): void {
+    this.getCvs().subscribe({
+      next: (cvs) => {
+        this.#cvsSignal.set(cvs);
+      },
+      error: () => {
+        this.#cvsSignal.set(this.getFakeCvs());
+        onError?.();
+      },
+    });
   }
 
   /**
@@ -87,7 +109,7 @@ export class CvService {
    * @returns Cv | null
    */
   findCvById(id: number): Cv | null {
-    return this.cvs.find((cv) => cv.id == id) ?? null;
+    return this.fakeCvs.find((cv) => cv.id == id) ?? null;
   }
 
   /**
@@ -98,9 +120,9 @@ export class CvService {
    * @returns boolean
    */
   deleteCv(cv: Cv): boolean {
-    const index = this.cvs.indexOf(cv);
+    const index = this.fakeCvs.indexOf(cv);
     if (index > -1) {
-      this.cvs.splice(index, 1);
+      this.fakeCvs.splice(index, 1);
       return true;
     }
     return false;
@@ -129,11 +151,11 @@ export class CvService {
   }
 
   /**
-   * Permet d'ajouter un cv au flux des cvs sélectionnés
+   * Permet de définir le CV sélectionné
    *
-   * @param cv : Le cv à ajouter dans le flux des cvs sélectionnés
+   * @param cv : Le cv à sélectionner
    */
   selectCv(cv: Cv) {
-    this.#selectCvSuject$.next(cv);
+    this.#selectedCvSignal.set(cv);
   }
 }
