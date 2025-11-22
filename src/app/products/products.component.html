@@ -2,7 +2,7 @@
   
   <button class="btn btn-primary" (click)="loadMoreProducts()"   [disabled]="noMoreProducts || isLoading">More Products</button>
 <div class="alert alert-danger mt-3" *ngIf="noMoreProducts">
-  Tous les produits ont été chargés — il n'y en a plus !
+  No more products to load.
 </div>
   <div class="alert alert-warning mt-3">
     Products Number: {{ productsList?.length }}
@@ -22,7 +22,6 @@
           <div class="product-category">{{ product.category }}</div>
         </div>
 
-        <div class="product-description">{{ product.description }}</div>
       </div>
 
     </div>
