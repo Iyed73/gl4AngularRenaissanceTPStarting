@@ -1,3 +1,30 @@
 <form [formGroup]="form">
-  <input type="text" class="form-control" formControlName="search" />
+  <input
+    type="text"
+    class="form-control"
+    formControlName="search"
+    placeholder="Rechercher un CV par nom..."
+  />
 </form>
+
+<div class="list-group mt-2" *ngIf="filteredCvs.length > 0">
+  <div
+    *ngFor="let cv of filteredCvs"
+    class="list-group-item list-group-item-action"
+    (click)="onSelectCv(cv)"
+    style="cursor: pointer"
+  >
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">{{ cv.firstname }} {{ cv.name }}</h5>
+      <small>{{ cv.age }} ans</small>
+    </div>
+    <p class="mb-1">{{ cv.job }}</p>
+  </div>
+</div>
+
+<div
+  class="alert alert-info mt-2"
+  *ngIf="search.value && filteredCvs.length === 0"
+>
+  Aucun CV trouvé pour "{{ search.value }}"
+</div>
