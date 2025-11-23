@@ -1,6 +1,6 @@
-import { Component, computed, effect, signal} from '@angular/core';
-import { resource } from '@angular/core/primitives';
-
+import { Component, signal, effect, resource } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
+import { CommonModule } from '@angular/common';
 import { ProductService } from './services/product.service';
 import { Product } from './dto/product.dto';
 import { Settings } from './dto/product-settings.dto';
@@ -8,53 +8,43 @@ import { Settings } from './dto/product-settings.dto';
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
-  styleUrl: './products.component.css'
+  styleUrls: ['./products.component.css'],
+  standalone: true,
+  imports: [CommonModule],
 })
 export class ProductsComponent {
-
   settings = signal<Settings>({ limit: 12, skip: 0 });
-
   isLoading = signal(false);
   noMoreProducts = signal(false);
-
   allProducts = signal<Product[]>([]);
 
   constructor(private productService: ProductService) {}
 
-  productsResource = resource({
-    request: () => {
-      this.isLoading.set(true);
-      return this.settings();
-    },
-
+  Rsrc = resource({
+    request: () => this.settings(), 
     loader: ({ request }) =>
-      this.productService.getProducts(request),
+      firstValueFrom(this.productService.getProducts(request))
   });
 
   productsEffect = effect(() => {
-    const res = this.productsResource.value();
-
+    const res = this.Rsrc.value();
     if (!res) return;
 
-    if (res.products.length === 0) {
+    if (!res.products || res.products.length === 0) {
       this.noMoreProducts.set(true);
       this.isLoading.set(false);
       return;
     }
 
-    this.allProducts.update(p => [...p, ...res.products]);
-
+    this.allProducts.update(prev => [...prev, ...res.products]);
     this.isLoading.set(false);
   });
 
   loadMoreProducts() {
     if (this.noMoreProducts()) return;
 
+    this.isLoading.set(true); 
     const { limit, skip } = this.settings();
-
-    this.settings.set({
-      limit,
-      skip: skip + limit
-    });
+    this.settings.set({ limit, skip: skip + limit });
   }
 }

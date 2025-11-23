@@ -5,18 +5,15 @@ import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { APP_ROUTES } from "src/config/routes.config";
 import { Cv } from "../model/cv";
-import { JsonPipe } from "@angular/common";
 
 @Component({
     selector: "app-add-cv",
     templateUrl: "./add-cv.component.html",
     styleUrls: ["./add-cv.component.css"],
-    standalone: true,
     imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    JsonPipe
-],
+        FormsModule,
+        ReactiveFormsModule,
+    ]
 })
 export class AddCvComponent {
   private cvService = inject(CvService);
