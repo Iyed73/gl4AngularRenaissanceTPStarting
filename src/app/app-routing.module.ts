@@ -12,6 +12,7 @@ import { AddCvComponent } from "./cv/add-cv/add-cv.component";
 import { CvComponent } from "./cv/cv/cv.component";
 import { DetailsCvComponent } from "./cv/details-cv/details-cv.component";
 import { RhComponent } from "./optimizationPattern/rh/rh.component";
+import { MasterDetailsCvComponent } from "./master-details-cv-component/master-details-cv-component.component";
 
 const routes: Route[] = [
   { path: "login", component: LoginComponent },
@@ -19,6 +20,16 @@ const routes: Route[] = [
   {
     path: "cv",
     component: CvComponent,
+  },
+  {
+    path:"list",
+    component: MasterDetailsCvComponent,
+    children: [
+      {
+        path: ':id',
+        component: DetailsCvComponent,
+      }
+    ]
   },
   { path: "cv/add", component: AddCvComponent, canActivate: [AuthGuard] },
   { path: "cv/:id", component: DetailsCvComponent },
