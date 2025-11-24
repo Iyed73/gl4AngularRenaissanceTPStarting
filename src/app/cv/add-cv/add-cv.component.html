@@ -13,6 +13,18 @@
   <input type="text" class="form-control" formControlName="age" /> Cin:
   <input type="text" class="form-control" formControlName="cin" />
   <div
+    *ngIf="cin?.errors && cin?.touched"
+    class="alert alert-danger"
+  >
+    <div *ngIf="cin?.errors?.['required']">Ce champ est obligatoire</div>
+    <div *ngIf="cin?.errors?.['cinInvalidLength']">Le CIN doit contenir exactement 8 caractères</div>
+    <div *ngIf="cin?.errors?.['cinNotNumerical']">Le CIN doit contenir uniquement des chiffres</div>
+    <div *ngIf="cin?.errors?.['cinNotUnique']">Ce CIN est déjà utilisé</div>
+    <div *ngIf="cin?.errors?.['cinAgeCorrelation']">
+      Les deux premiers chiffres du CIN ne correspondent pas à l'âge
+    </div>
+  </div>
+  <div
     *ngIf="
       form.errors && form.errors['cinFirstCars'] && cin?.touched && age?.touched
     "
