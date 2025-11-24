@@ -7,6 +7,7 @@ import { APP_ROUTES } from '../../../config/routes.config';
 import { AuthService } from '../../auth/services/auth.service';
 
 import { DefaultImagePipe } from '../pipes/default-image.pipe';
+import { debounce, debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
     selector: 'app-details-cv',
@@ -29,7 +30,7 @@ export class DetailsCvComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    this.activatedRoute.params.subscribe(params => {
+    this.activatedRoute.params.pipe(debounceTime(1000),distinctUntilChanged()).subscribe(params => {
       const id = params['id'];
       
       if (id) {
