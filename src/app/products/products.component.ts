@@ -1,9 +1,10 @@
-import { Component, signal, effect, resource } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { Component, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductService } from './services/product.service';
 import { Product } from './dto/product.dto';
 import { Settings } from './dto/product-settings.dto';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { ProductApiResponse } from './dto/product-api-response.dto';
 
 @Component({
   selector: 'app-products',
@@ -20,10 +21,9 @@ export class ProductsComponent {
 
   constructor(private productService: ProductService) {}
 
-  Rsrc = resource({
-    request: () => this.settings(), 
-    loader: ({ request }) =>
-      firstValueFrom(this.productService.getProducts(request))
+  Rsrc = rxResource<ProductApiResponse, Settings>({
+    params: this.settings, 
+    stream: ({ params }) => this.productService.getProducts(params), 
   });
 
   productsEffect = effect(() => {
@@ -43,7 +43,7 @@ export class ProductsComponent {
   loadMoreProducts() {
     if (this.noMoreProducts()) return;
 
-    this.isLoading.set(true); 
+    this.isLoading.set(true);
     const { limit, skip } = this.settings();
     this.settings.set({ limit, skip: skip + limit });
   }

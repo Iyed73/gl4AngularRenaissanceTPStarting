@@ -9,13 +9,13 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { AppRoutingModule } from './app/app-routing.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { isDevMode, importProvidersFrom } from '@angular/core';
+import { isDevMode, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { AppComponent } from './app/app.component';
 
 
 bootstrapApplication(AppComponent, {
     providers: [
-        importProvidersFrom(BrowserModule, FormsModule, // required animations module
+        provideZoneChangeDetection(),importProvidersFrom(BrowserModule, FormsModule, // required animations module
         ToastrModule.forRoot(), // ToastrModule added
         AppRoutingModule, ReactiveFormsModule, ServiceWorkerModule.register("ngsw-worker.js", {
             enabled: !isDevMode(),
