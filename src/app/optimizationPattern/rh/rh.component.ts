@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit,NgZone} from '@angular/core';
 import {User, UsersService} from "../users.service";
 import * as ChartJs from 'chart.js/auto';
 @Component({
@@ -10,16 +10,25 @@ export class RhComponent implements OnInit {
   oddUsers: User[];
   evenUsers: User[];
   chart: any;
-  constructor(private userService: UsersService) {
+  constructor(private userService: UsersService,private ngZone: NgZone) {
     this.oddUsers = this.userService.getOddOrEven(true);
     this.evenUsers = this.userService.getOddOrEven();
   }
 
   ngOnInit(): void {
-        this.createChart();
+    this.ngZone.runOutsideAngular(() => {//zone pollutionpattern
+      this.createChart();
+    });
     }
   addUser(list: User[], newUser: string) {
-    this.userService.addUser(list, newUser);
+    //Solution Out of Bound
+    const updatedList = this.userService.addUser(list, newUser);
+    if (list === this.oddUsers) {
+      this.oddUsers = updatedList;
+    } else {
+      this.evenUsers = updatedList;
+    }
+    this.updateChart();
   }
   createChart(){
     const data = [
@@ -39,5 +48,14 @@ export class RhComponent implements OnInit {
       ]
     }
     });
+  }
+    updateChart() {
+    if (this.chart) {
+      this.chart.data.datasets[0].data = [
+        this.oddUsers.length,
+        this.evenUsers.length
+      ];
+      this.chart.update();
+    }
   }
 }
