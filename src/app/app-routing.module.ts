@@ -12,6 +12,7 @@ import { AddCvComponent } from "./cv/add-cv/add-cv.component";
 import { CvComponent } from "./cv/cv/cv.component";
 import { DetailsCvComponent } from "./cv/details-cv/details-cv.component";
 import { RhComponent } from "./optimizationPattern/rh/rh.component";
+import { DetailsCvSignalComponent } from "./cv/details-cv-signal/details-cv-signal.component";
 
 const routes: Route[] = [
   { path: "login", component: LoginComponent },
@@ -21,7 +22,7 @@ const routes: Route[] = [
     component: CvComponent,
   },
   { path: "cv/add", component: AddCvComponent, canActivate: [AuthGuard] },
-  { path: "cv/:id", component: DetailsCvComponent },
+  { path: "cv/:id", component: DetailsCvSignalComponent },
   {
     path: "",
     component: FrontComponent,
