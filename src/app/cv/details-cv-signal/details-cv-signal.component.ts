@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, resource, signal } from '@angular/core';
 import { Cv } from '../model/cv';
 import { CvService } from '../services/cv.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,7 +7,7 @@ import { APP_ROUTES } from '../../../config/routes.config';
 import { AuthService } from '../../auth/services/auth.service';
 import { DefaultImagePipe } from '../pipes/default-image.pipe';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { catchError, EMPTY, tap, throwError } from 'rxjs';
+import { catchError, EMPTY, firstValueFrom, tap, throwError } from 'rxjs';
 
 @Component({
     selector: 'app-details-cv-signal',
@@ -26,31 +26,30 @@ export class DetailsCvSignalComponent {
   private activatedRoute = inject(ActivatedRoute);
   private id = signal(+this.activatedRoute.snapshot.params['id']);
 
-  cvResource = rxResource<Cv, number>({
-    params: () => this.id(),  
-    stream: ({ params }) => this.cvService.getCvById(params).pipe(
-      tap(cv => this.cv.set(cv))
-    )
+   cvResource = resource<Cv | null, number>({
+    params: () => this.id(),
+    loader: async ({ params: cvId }) => {
+      const cvData = await firstValueFrom(this.cvService.getCvById(cvId));
+      this.cv.set(cvData);
+      return cvData;
+    },
+    defaultValue: null
   });
 
  cvToDelete = signal<Cv | null>(null);
-  deleteResource = rxResource<void, Cv | null>({
-    params: () => this.cvToDelete(),  
-    stream: ({ params: cv }) => {
-      if (!cv) return EMPTY; 
-      return this.cvService.deleteCvById(cv.id).pipe(
-        tap(() => {
-          this.toastr.success(`${cv.name} supprimé avec succès`);
-          this.router.navigate(['/cv']);
-        }),
-        catchError((error) => {
-        this.toastr.error(
-          `Problème avec le serveur, veuillez contacter l'admin`
-        );
-        return EMPTY;
-      })
+  deleteResource = resource<void, Cv | null>({
+    params: () => this.cvToDelete(),
+    loader: async ({ params: cv }) => {
+      if (!cv) return;
+      await firstValueFrom(
+        this.cvService.deleteCvById(cv.id).pipe(
+          tap(() => {
+            this.router.navigate(['/cv']);
+          })
+        )
       );
-    }
+    },
+    defaultValue: undefined
   });
 
   deleteCv(cv: Cv) {

@@ -1,4 +1,22 @@
-@if (cv(); as cv) {
+@if (cvResource.isLoading()) {
+  <div class="alert alert-info">
+    Loading ...
+  </div>
+}
+
+@if (cvResource.error()) {
+  <div class="alert alert-error">
+    Une erreur s'est produite
+  </div>
+}
+@if (deleteResource.error()) {
+  <div class="alert alert-info">
+    Une erreur s'est produite lors de la suppression du cv
+  </div>
+}
+
+@if (cvResource.hasValue()) {
+  @if (cv(); as cv) {
   <div class="d-flex justify-content-center">
     <div class="col-lg-8 push-lg-4">
       <div class="tab-content p-b-3">
@@ -45,3 +63,6 @@
     </div>
   </div>
 }
+
+}
+
