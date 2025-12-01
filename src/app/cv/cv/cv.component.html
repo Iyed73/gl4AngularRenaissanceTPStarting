@@ -9,4 +9,17 @@
     <app-cv-card [cv]="selectedCv"></app-cv-card>
   </div>
 </div>
-<app-embauche></app-embauche>
+@if (embauchees.length > 0) {
+  
+  @defer (on viewport) {
+    <app-embauche></app-embauche>
+  } 
+  @placeholder {
+    <div class="alert alert-info">Chargement...</div>
+  }
+
+} @else {
+  <div class="alert alert-info">
+     Les embauchées s'afficheront ici
+  </div>
+}

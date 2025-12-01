@@ -7,6 +7,7 @@ import { ListComponent } from "../list/list.component";
 import { CvCardComponent } from "../cv-card/cv-card.component";
 import { EmbaucheComponent } from "../embauche/embauche.component";
 import { UpperCasePipe, DatePipe } from "@angular/common";
+import { EmbaucheService } from "../services/embauche.service";
 @Component({
     selector: "app-cv",
     templateUrl: "./cv.component.html",
@@ -24,6 +25,7 @@ export class CvComponent {
   private logger = inject(LoggerService);
   private toastr = inject(ToastrService);
   private cvService = inject(CvService);
+  private embaucheService = inject(EmbaucheService);
 
   cvs: Cv[] = [];
   selectedCv: Cv | null = null;
@@ -48,5 +50,9 @@ export class CvComponent {
     this.logger.logger("je suis le cvComponent");
     this.toastr.info("Bienvenu dans notre CvTech");
     this.cvService.selectCv$.subscribe((cv) => (this.selectedCv = cv));
+  }
+
+  get embauchees() {
+    return this.embaucheService.getEmbauchees();
   }
 }
