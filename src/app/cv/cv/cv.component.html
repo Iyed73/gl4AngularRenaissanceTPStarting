@@ -10,16 +10,21 @@
   </div>
 </div>
 @if (embauchees.length > 0) {
-  
-  @defer (on viewport) {
+
+  @defer (on viewport; prefetch on immediate) {
     <app-embauche></app-embauche>
   } 
+  @loading {
+    <div class="alert alert-info">Chargement en cours...</div>
+  }
   @placeholder {
-    <div class="alert alert-info">Chargement...</div>
+    <div class="alert alert-secondary mt-2">
+      Liste des embauchées
+    </div>
   }
 
 } @else {
-  <div class="alert alert-info">
-     Les embauchées s'afficheront ici
+  <div class="alert alert-light mt-2">
+    <p>Aucun CV sélectionné pour l'embauche.</p>
   </div>
 }
