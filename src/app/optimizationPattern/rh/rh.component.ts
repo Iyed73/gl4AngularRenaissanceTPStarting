@@ -1,59 +1,58 @@
-import {Component, OnInit,NgZone} from '@angular/core';
-import {User, UsersService} from "../users.service";
+import { Component, OnInit, NgZone } from '@angular/core';
+import { User, UsersService } from '../users.service';
 import * as ChartJs from 'chart.js/auto';
 @Component({
   selector: 'app-rh',
   templateUrl: './rh.component.html',
-  styleUrls: ['./rh.component.css']
+  styleUrls: ['./rh.component.css'],
 })
 export class RhComponent implements OnInit {
   oddUsers: User[];
   evenUsers: User[];
   chart: any;
-  constructor(private userService: UsersService,private ngZone: NgZone) {
+  constructor(private userService: UsersService, private ngZone: NgZone) {
     this.oddUsers = this.userService.getOddOrEven(true);
     this.evenUsers = this.userService.getOddOrEven();
   }
 
   ngOnInit(): void {
-    this.ngZone.runOutsideAngular(() => {//zone pollutionpattern
+    this.ngZone.runOutsideAngular(() => {
+      //zone pollutionpattern
       this.createChart();
     });
-    }
+  }
   addUser(list: User[], newUser: string) {
     //Solution Out of Bound
-    const updatedList = this.userService.addUser(list, newUser);
     if (list === this.oddUsers) {
-      this.oddUsers = updatedList;
+      this.oddUsers = this.userService.addUser(list, newUser, true);
     } else {
-      this.evenUsers = updatedList;
+      this.evenUsers = this.userService.addUser(list, newUser);
     }
     this.updateChart();
   }
-  createChart(){
+  createChart() {
     const data = [
       { users: 'Workers', count: this.oddUsers.length },
       { users: 'Boss', count: this.evenUsers.length },
     ];
-    this.chart = new ChartJs.Chart("MyChart",
-    {
+    this.chart = new ChartJs.Chart('MyChart', {
       type: 'bar',
-        data: {
-          labels: data.map(row => row.users),
+      data: {
+        labels: data.map((row) => row.users),
         datasets: [
-        {
-          label: 'Entreprise stats',
-          data: data.map(row => row.count)
-        }
-      ]
-    }
+          {
+            label: 'Entreprise stats',
+            data: data.map((row) => row.count),
+          },
+        ],
+      },
     });
   }
-    updateChart() {
+  updateChart() {
     if (this.chart) {
       this.chart.data.datasets[0].data = [
         this.oddUsers.length,
-        this.evenUsers.length
+        this.evenUsers.length,
       ];
       this.chart.update();
     }
