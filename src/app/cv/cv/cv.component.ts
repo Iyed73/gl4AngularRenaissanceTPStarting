@@ -30,9 +30,9 @@ export class CvComponent {
   private cvService = inject(CvService);
 
   cvs = signal<Cv[]>([]);
-  date = signal(new Date());
+  date = new Date();
 
-  cvsResource = rxResource<Cv[], boolean>({
+  cvsResource = rxResource<Cv[], void>({
     stream: () => {
       return this.cvService.getCvs().pipe(
         tap((cvsData) => {
