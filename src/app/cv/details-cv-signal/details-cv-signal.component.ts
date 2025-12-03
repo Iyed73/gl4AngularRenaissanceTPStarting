@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../auth/services/auth.service';
 import { DefaultImagePipe } from '../pipes/default-image.pipe';
 import { of, tap } from 'rxjs';
+import { LoggerService } from 'src/app/services/logger.service';
 
 @Component({
   selector: 'app-details-cv-signal',
@@ -16,6 +17,7 @@ import { of, tap } from 'rxjs';
   imports: [DefaultImagePipe],
 })
 export class DetailsCvSignalComponent {
+  private logger = inject(LoggerService);
   private cvService = inject(CvService);
   private router = inject(Router);
   private toastr = inject(ToastrService);
