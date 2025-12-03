@@ -1,12 +1,26 @@
-<div class="row">
-  <div class="col">
-    <div class="alert alert-warning">
-      {{ date | date : "full" | uppercase }}
+@if (cvsResource.isLoading()) {
+  <div class="alert alert-info">
+    Loading ...
+  </div>
+}
+
+@if (cvsResource.error()) {
+  <div class="alert alert-error">
+    Une erreur s'est produite lors du chargement des CVs
+  </div>
+}
+
+@if (cvsResource.hasValue()) {
+  <div class="row">
+    <div class="col">
+      <div class="alert alert-warning">
+        {{ date() | date : "full" | uppercase }}
+      </div>
+      <app-list [cvs]="cvs()"></app-list>
     </div>
-    <app-list [cvs]="cvs"></app-list>
+    <div class="col">
+      <app-cv-card [cv]="selectedCv()"></app-cv-card>
+    </div>
   </div>
-  <div class="col">
-    <app-cv-card [cv]="selectedCv"></app-cv-card>
-  </div>
-</div>
-<app-embauche></app-embauche>
+  <app-embauche></app-embauche>
+}
