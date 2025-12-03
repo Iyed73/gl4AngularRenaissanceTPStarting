@@ -27,7 +27,7 @@ const routes: Route[] = [
     children: [
       {
         path: ':id',
-        component: DetailsCvComponent,
+        component: DetailsCvSignalComponent,
       },
     ],
   },
